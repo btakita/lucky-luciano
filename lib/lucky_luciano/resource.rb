@@ -1,11 +1,6 @@
 module LuckyLuciano
   class Resource < Module
     class << self
-      attr_accessor :path
-      def map(path)
-        self.path = path
-      end
-
       def recorded_http_handlers
         @recorded_http_handlers ||= []
       end
@@ -19,11 +14,16 @@ module LuckyLuciano
       end
     end
 
+    attr_reader :base_path
+    def initialize(base_path)
+      @base_path = base_path
+    end
+
     def registered(app)
       self.class.recorded_http_handlers.each do |handler|
         verb, relative_path, opts, block = handler
         me = self
-        app.send(verb, "#{self.class.path}#{relative_path.gsub(/\/$/, "")}", opts) do
+        app.send(verb, "#{base_path}#{relative_path.gsub(/\/$/, "")}", opts) do
           me.instance_eval(&block)
         end
       end
