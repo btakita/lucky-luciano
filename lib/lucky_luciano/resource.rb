@@ -6,32 +6,28 @@ module LuckyLuciano
         self.path = path
       end
 
-      def get(relative_path, opts={}, &block)
-        super("#{path}#{relative_path}".gsub(/\/$/, ""), opts, &block)
-      end
-
-      def put(relative_path, opts={}, &block)
-        super("#{path}#{relative_path}".gsub(/\/$/, ""), opts, &block)
-      end
-
-      def post(relative_path, opts={}, &block)
-        super("#{path}#{relative_path}".gsub(/\/$/, ""), opts, &block)
-      end
-
-      def delete(relative_path, opts={}, &block)
-        super("#{path}#{relative_path}".gsub(/\/$/, ""), opts, &block)
+      ["get", "put", "post", "delete"].each do |http_verb|
+        class_eval(<<-EVAL, __FILE__, __LINE__)
+        def #{http_verb}(relative_path, opts={}, &block)
+          me = self
+          full_path = (path + relative_path).gsub(Regexp.new("/$", ""), "")
+          super(full_path, opts) do
+            me.new(self).instance_eval(&block)
+          end
+        end
+        EVAL
       end
     end
 
     include Sinatra
 
-    attr_reader :request
-    def initialize(request)
-      @request = request
+    attr_reader :application
+    def initialize(application)
+      @application = application
     end
 
     protected
 
-    def params; request.params; end
+    def params; application.params; end
   end
 end
