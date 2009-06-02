@@ -9,12 +9,17 @@ module LuckyLuciano
     describe Resource do
       include ResourceSpec
 
+      before do
+        ResourceFixture.recorded_http_handlers.clear
+      end
+
       macro("http verb") do |verb|
         describe ".#{verb}" do
           it "creates a route to #{verb.upcase} the given path that executes the given block" do
             ResourceFixture.send(verb, "/") do
               "He sleeps with the fishes"
             end
+            app.register(ResourceFixture.new)
             response = send(verb, "/foobar")
             response.status.should == 200
             response.body.should include("He sleeps with the fishes")
@@ -24,6 +29,7 @@ module LuckyLuciano
             ResourceFixture.send(verb, "/") do
               ""
             end
+            app.register(ResourceFixture.new)
             get("/foobar").status.should == 404 unless verb == "get"
             put("/foobar").status.should == 404 unless verb == "put"
             post("/foobar").status.should == 404 unless verb == "post"
@@ -36,6 +42,7 @@ module LuckyLuciano
               evaluation_target = self
               ""
             end
+            app.register(ResourceFixture.new)
 
             send(verb, "/foobar")
             evaluation_target.class.should == ResourceFixture

@@ -3,6 +3,7 @@ require "spec"
 require "spec/autorun"
 require 'rack/test'
 require "rr"
+require "sinatra"
 
 ARGV.push("-b")
 
@@ -30,7 +31,9 @@ class Spec::ExampleGroup
   include Rack::Test::Methods
 
   before do
-    Sinatra::Application.reset!
+    app.routes.clear
+    Sinatra::Default.routes.clear
+    app.reset!
   end
 
   def app

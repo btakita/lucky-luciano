@@ -1,33 +1,32 @@
 module LuckyLuciano
-  class Resource
+  class Resource < Module
     class << self
       attr_accessor :path
       def map(path)
         self.path = path
       end
 
+      def recorded_http_handlers
+        @recorded_http_handlers ||= []
+      end
+
       ["get", "put", "post", "delete"].each do |http_verb|
         class_eval(<<-EVAL, __FILE__, __LINE__ + 1)
         def #{http_verb}(relative_path, opts={}, &block)
-          me = self
-          full_path = (path + relative_path).gsub(Regexp.new("/$", ""), "")
-          super(full_path, opts) do
-            me.new(self).instance_eval(&block)
-          end
+          recorded_http_handlers << [:#{http_verb}, relative_path, opts, block]
         end
         EVAL
       end
     end
 
-    include Sinatra
-
-    attr_reader :application
-    def initialize(application)
-      @application = application
+    def registered(app)
+      self.class.recorded_http_handlers.each do |handler|
+        verb, relative_path, opts, block = handler
+        me = self
+        app.send(verb, "#{self.class.path}#{relative_path.gsub(/\/$/, "")}", opts) do
+          me.instance_eval(&block)
+        end
+      end
     end
-
-    protected
-
-    def params; application.params; end
   end
 end
