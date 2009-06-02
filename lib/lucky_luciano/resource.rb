@@ -7,7 +7,7 @@ module LuckyLuciano
       end
 
       ["get", "put", "post", "delete"].each do |http_verb|
-        class_eval(<<-EVAL, __FILE__, __LINE__)
+        class_eval(<<-EVAL, __FILE__, __LINE__ + 1)
         def #{http_verb}(relative_path, opts={}, &block)
           me = self
           full_path = (path + relative_path).gsub(Regexp.new("/$", ""), "")
