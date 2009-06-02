@@ -14,9 +14,9 @@ module LuckyLuciano
       end
     end
 
-    attr_reader :base_path
-    def initialize(base_path)
-      @base_path = base_path
+    attr_reader :base_path, :name
+    def initialize(base_path, name)
+      @base_path, @name = base_path, name
     end
 
     def registered(app)
@@ -27,6 +27,10 @@ module LuckyLuciano
           me.instance_eval(&block)
         end
       end
+    end
+
+    def path
+      base_path
     end
   end
 end
