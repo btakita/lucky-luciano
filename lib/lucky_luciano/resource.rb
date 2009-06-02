@@ -1,23 +1,25 @@
 module LuckyLuciano
   class Resource
     class << self
-      def register(path)
-        me = self
-        get path do
-          me.new(self).get
-        end
+      attr_accessor :path
+      def map(path)
+        self.path = path
+      end
 
-        post path do
-          me.new(self).post
-        end
+      def get(relative_path, opts={}, &block)
+        super("#{path}#{relative_path}".gsub(/\/$/, ""), opts, &block)
+      end
 
-        put path do
-          me.new(self).put
-        end
+      def put(relative_path, opts={}, &block)
+        super("#{path}#{relative_path}".gsub(/\/$/, ""), opts, &block)
+      end
 
-        delete path do
-          me.new(self).delete
-        end
+      def post(relative_path, opts={}, &block)
+        super("#{path}#{relative_path}".gsub(/\/$/, ""), opts, &block)
+      end
+
+      def delete(relative_path, opts={}, &block)
+        super("#{path}#{relative_path}".gsub(/\/$/, ""), opts, &block)
       end
     end
 
@@ -26,22 +28,6 @@ module LuckyLuciano
     attr_reader :request
     def initialize(request)
       @request = request
-    end
-
-    def get
-      raise NotFound
-    end
-
-    def put
-      raise NotFound
-    end
-
-    def post
-      raise NotFound
-    end
-
-    def delete
-      raise NotFound
     end
 
     protected

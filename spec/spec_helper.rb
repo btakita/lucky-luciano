@@ -4,6 +4,8 @@ require "spec/autorun"
 require 'rack/test'
 require "rr"
 
+ARGV.push("-b")
+
 dir = File.dirname(__FILE__)
 $:.unshift File.expand_path("#{dir}/../lib")
 require "lucky_luciano"
@@ -11,7 +13,25 @@ require "lucky_luciano"
 set :environment, :test
 
 class Spec::ExampleGroup
+  class << self
+    def macro(name, &block)
+      eigen do
+        define_method(name, &block)
+      end
+    end
+
+    def eigen(&block)
+      eigen_class = (class << self; self; end)
+      eigen_class.class_eval(&block)
+      eigen_class
+    end
+  end
+  
   include Rack::Test::Methods
+
+  before do
+    Sinatra::Application.reset!
+  end
 
   def app
     Sinatra::Application
