@@ -80,8 +80,8 @@ module LuckyLuciano
             ResourceFixtureWithSubPaths.path("baz").should == "/foobar/baz"
           end
           
-          context "when passed a defined route parameter" do
-            it "includes the route parameter in the returned path" do
+          context "when passed a multiple sub paths" do
+            it "joins the sub paths with '/'" do
               ResourceFixtureWithSubPaths.path("users", 99).should == "/foobar/users/99"
             end
           end
