@@ -6,6 +6,14 @@ module LuckyLuciano
       map "/foobar"
     end
 
+    class ResourceFixtureWithSubPaths < Resource
+      map "/foobar"
+
+      get "/baz" do
+        "Response from /foobar/baz"
+      end
+    end
+
     describe Resource do
       include ResourceSpec
 
@@ -54,6 +62,21 @@ module LuckyLuciano
       send("http verb", "put")
       send("http verb", "post")
       send("http verb", "delete")
+
+      describe ".path" do
+        context "when passed nothing" do
+          it "returns the base_path" do
+            ResourceFixture.path.should == "/foobar"
+          end
+        end
+        
+        context "when passed a sub path" do
+          it "merges the base_path into the sub path, regardless of a / in front" do
+            ResourceFixtureWithSubPaths.path("/baz").should == "/foobar/baz"
+            ResourceFixtureWithSubPaths.path("baz").should == "/foobar/baz"
+          end
+        end
+      end
     end
   end
   
