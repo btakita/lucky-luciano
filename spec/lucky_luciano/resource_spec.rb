@@ -85,6 +85,23 @@ module LuckyLuciano
               ResourceFixtureWithSubPaths.path("users", 99).should == "/foobar/users/99"
             end
           end
+
+          context "when passed a hash as the last argument" do
+            it "creates url params from the hash" do
+              path = ResourceFixtureWithSubPaths.path(
+                "users", 99, {:single_value_param => "single_value_param_value", 'multiple_value_param[]' => [1,2,3]}
+              )
+              uri = URI.parse(path)
+              uri.path.should == "/foobar/users/99"
+              query_parts = uri.query.split("&")
+              query_parts.should =~ [
+                "multiple_value_param[]=1",
+                "multiple_value_param[]=2",
+                "multiple_value_param[]=3",
+                "single_value_param=single_value_param_value",
+              ]
+            end
+          end
         end
       end
     end

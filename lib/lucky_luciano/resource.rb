@@ -4,7 +4,14 @@ module LuckyLuciano
       attr_reader :base_path
 
       def path(*sub_paths)
-        "#{base_path}/#{sub_paths.join("/")}".gsub("//", "/").gsub(/\/$/, "")
+        params = sub_paths.last.is_a?(Hash) ? sub_paths.pop : nil
+        full_path = "#{base_path}/#{sub_paths.join("/")}".gsub("//", "/").gsub(/\/$/, "")
+        if params
+          query = build_query(params)
+          "#{full_path}?#{query}"
+        else
+          full_path
+        end
       end
 
       def map(base_path)
@@ -29,6 +36,15 @@ module LuckyLuciano
       
       protected
       attr_writer :base_path
+
+      def build_query(params)
+        params.to_a.inject([]) do |splatted_params, (key, value)|
+          [value].flatten.each do |value_in_param|
+            splatted_params << "#{URI.escape(key.to_s)}=#{URI.escape(value_in_param.to_s)}"
+          end
+          splatted_params
+        end.join("&")
+      end
 
       def create_sinatra_handler
         handlers = recorded_http_handlers
