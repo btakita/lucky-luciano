@@ -12,6 +12,10 @@ module LuckyLuciano
       get "/baz" do
         "Response from /foobar/baz"
       end
+
+      get "/users/:user_id" do
+        "User id is #{params[:user_id]}"
+      end
     end
 
     describe Resource do
@@ -74,6 +78,12 @@ module LuckyLuciano
           it "merges the base_path into the sub path, regardless of a / in front" do
             ResourceFixtureWithSubPaths.path("/baz").should == "/foobar/baz"
             ResourceFixtureWithSubPaths.path("baz").should == "/foobar/baz"
+          end
+          
+          context "when passed a defined route parameter" do
+            it "includes the route parameter in the returned path" do
+              ResourceFixtureWithSubPaths.path("users", 99).should == "/foobar/users/99"
+            end
           end
         end
       end

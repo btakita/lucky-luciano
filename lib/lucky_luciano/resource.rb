@@ -3,8 +3,8 @@ module LuckyLuciano
     class << self
       attr_reader :base_path
 
-      def path(sub_path="")
-        "#{base_path}/#{sub_path}".gsub("//", "/").gsub(/\/$/, "")
+      def path(*sub_paths)
+        "#{base_path}/#{sub_paths.join("/")}".gsub("//", "/").gsub(/\/$/, "")
       end
 
       def map(base_path)
