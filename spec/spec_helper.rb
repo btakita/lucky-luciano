@@ -31,8 +31,8 @@ class Spec::ExampleGroup
   include Rack::Test::Methods
 
   before do
-    app.route_handler.clear
-    Sinatra::Default.route_handler.clear
+    app.routes.clear
+    Sinatra::Default.routes.clear
     app.reset!
   end
 
