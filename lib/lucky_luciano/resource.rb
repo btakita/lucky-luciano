@@ -5,7 +5,7 @@ module LuckyLuciano
         @recorded_http_handlers ||= []
       end
 
-      def routes(base_path)
+      def route_handler(base_path)
         create_sinatra_handler(base_path)
       end
 
