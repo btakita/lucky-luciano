@@ -6,6 +6,7 @@ The base route and the relative route are simply merged to create the full route
     module Resource
       class Users < LuckyLuciano::Resource
         map "/users"
+        include UserAuthentication
 
         get "/" do
         end
@@ -25,14 +26,11 @@ The base route and the relative route are simply merged to create the full route
           require_login
           # ...
         end
-
-        protected
-        def require_login
-        end
       end
 
       class UserComments < LuckyLuciano::Resource
         map "/users/:user_id/comments"
+        include UserAuthentication
 
         get "/" do
         end
@@ -41,6 +39,8 @@ The base route and the relative route are simply merged to create the full route
         end
 
         post "/" do
+          require_login
+          # ...
         end
       end
     end
