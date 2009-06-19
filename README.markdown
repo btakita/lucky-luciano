@@ -47,11 +47,11 @@ You can map the Resource to the Sinatra application by registering the route_han
 Lucky Luciano also provides a named-route scheme, which is easy to search for in the code-base.
 It is rather verbose and ideas are welcome to shorten it, while maintaining searchability and simplicity.
 
-    <a href="<%= R::Users.path("/:user_id", :user_id => @user.id, :additional_param => "param 1") %>">Bob</a>
-    a "Bob", :href => R::Users.path("/:user_id", :user_id => @user.id, :additional_param => "param 1")
+    <a href="<%= Resource::Users.path("/:user_id", :user_id => @user.id, :additional_param => "param 1") %>">Bob</a>
+    a "Bob", :href => Resource::Users.path("/:user_id", :user_id => @user.id, :additional_param => "param 1")
 
-    <a href="<%= R::UserComments.path("/:comment_id", :user_id => @user.id, :comment_id => @comment.id) %>">Bob's Comment</a>
-    a "Bob's Comment", :href => R::UserComments.path("/:comment_id", :user_id => @user.id, :comment_id => @comment.id)
+    <a href="<%= Resource::UserComments.path("/:comment_id", :user_id => @user.id, :comment_id => @comment.id) %>">Bob's Comment</a>
+    a "Bob's Comment", :href => Resource::UserComments.path("/:comment_id", :user_id => @user.id, :comment_id => @comment.id)
 
 Compare with Rails named routes
 
