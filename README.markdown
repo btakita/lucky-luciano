@@ -42,6 +42,7 @@ You can map the Resource to the Sinatra application by registering the route_han
 
     class YourApp < Sinatra::Base
       register(UsersResource.route_handler)
+      register(UserCommentsResource.route_handler)
     end
 
 Lucky Luciano also provides a named-route scheme, which is easy to search for in the code-base.
