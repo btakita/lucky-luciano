@@ -17,9 +17,17 @@ The base route and the relative route are simply merged to create the full route
         end
 
         put "/:user_id" do
+          require_login
+          # ...
         end
 
         delete "/:user_id" do
+          require_login
+          # ...
+        end
+
+        protected
+        def require_login
         end
       end
 
