@@ -49,11 +49,7 @@ module LuckyLuciano
             it "creates a route to #{verb.upcase} the given path that executes the given block" do
               app.register(ResourceFixture.route_handler)
               response = send(verb, "/foobar")
-              response.should be_http(
-                200,
-                {},
-                "He sleeps with the fishes"
-              )
+              response.should be_http( 200, {}, "He sleeps with the fishes" )
             end
           end
 
@@ -67,11 +63,7 @@ module LuckyLuciano
             it "creates a route to /" do
               app.register(Root.route_handler)
               response = send(verb, "/")
-              response.should be_http(
-                200,
-                {},
-                "Response from /"
-              )
+              response.should be_http( 200, {}, "Response from /" )
             end
           end
 
@@ -85,11 +77,7 @@ module LuckyLuciano
             it "creates a route to #{verb.upcase} the given path that executes the given block" do
               app.register(ResourceFixtureWithSubPaths.route_handler)
               response = send(verb, "/foobar/no_leading_slash")
-              response.should be_http(
-                200,
-                {},
-                "Response from /foobar/no_leading_slash"
-              )
+              response.should be_http( 200, {}, "Response from /foobar/no_leading_slash" )
             end
           end
 
