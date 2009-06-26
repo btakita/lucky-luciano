@@ -23,6 +23,10 @@ module LuckyLuciano
         RUBY
       end
 
+      def [](sub_path=nil)
+        Path.new(self, sub_path)
+      end
+
       def path(*sub_paths)
         params = sub_paths.last.is_a?(Hash) ? sub_paths.pop : {}
 
