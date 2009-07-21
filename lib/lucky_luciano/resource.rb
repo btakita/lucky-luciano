@@ -32,8 +32,7 @@ module LuckyLuciano
 
         sub_path_definition = sub_paths.join("/")
 
-        full_path = "#{base_path(params)}/#{path_from_definition(sub_path_definition, params)}".
-          gsub("//", "/").gsub(/\/$/, "")
+        full_path = normalize_seperators("#{base_path(params)}/#{path_from_definition(sub_path_definition, params)}").gsub(/\/$/, "")
 
         base_path_param_keys = param_keys_from(base_path_definition)
         query_params = params.delete_if do |key, value|
@@ -55,6 +54,10 @@ module LuckyLuciano
 
       def base_path(params={})
         path_from_definition(base_path_definition, params)
+      end
+
+      def normalize_seperators(url)
+        url.gsub(Regexp.new("//+"), '/')
       end
 
       protected
@@ -101,17 +104,17 @@ module LuckyLuciano
       end
 
       def create_sinatra_handler
-        handlers = recorded_http_handlers
         resource_class = self
         Module.new do
           (class << self; self; end).class_eval do
             define_method(:registered) do |app|
-              handlers.each do |handler|
+              resource_class.recorded_http_handlers.each do |handler|
                 verb, relative_path, opts, block = handler
-                full_path = "#{resource_class.base_path_definition}/#{relative_path}".
-                  gsub("//", "/").gsub(%r{^.+/$}) do |match|
+                full_path = resource_class.normalize_seperators(
+                  "#{resource_class.base_path_definition}/#{relative_path}"
+                ).gsub(%r{^.+/$}) do |match|
                     match.gsub(%r{/$}, "")
-                  end
+                end
                 app.send(verb, full_path, opts) do
                   resource_class.new(self).instance_eval(&block)
                 end

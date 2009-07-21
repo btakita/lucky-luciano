@@ -11,7 +11,7 @@ module LuckyLuciano
     end
 
     class ResourceFixtureWithSubPaths < Resource
-      map "/foobar"
+      map "/foobar/"
 
       get "/baz" do
         "Response from /foobar/baz"
@@ -148,8 +148,8 @@ module LuckyLuciano
 
         context "when passed a sub path" do
           it "merges the base_path into the sub path, regardless of a / in front" do
-            ResourceFixtureWithSubPaths["/baz"].should == "/foobar/baz"
-            ResourceFixtureWithSubPaths["baz"].should == "/foobar/baz"
+            ResourceFixtureWithSubPaths["/baz"].to_s.should == "/foobar/baz"
+            ResourceFixtureWithSubPaths["baz"].to_s.should == "/foobar/baz"
           end
 
           context "when passed a multiple sub paths" do
